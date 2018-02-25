@@ -20,10 +20,10 @@ Adafruit_LIS3DH lis = Adafruit_LIS3DH();
    #define Serial SerialUSB
 #endif
 //variables for three axis
-int io; int state;
+int counter; int state;
 int ax; int ay; int az;
 int bx; int by; int bz;
-int nAn; int fox; int rabbit; int duck; int dinner;
+int nAn;
 
 
 void setup() {
@@ -62,70 +62,39 @@ void loop(){
   io.run();
 
   nAn = 200;
-  io = 0;
-  while (io < 10){
+  while (counter <= 10){
   // grab the one state of the acc
     lis.read();
-    state = 0;
-    //input ->save(state);
     ax = lis.x; ay = lis.y; az = lis.z;
-
   //get new number to be compared against
     delay(250);
     lis.read();
     bx = lis.x; by = lis.y; bz = lis.z;
-
-    //FOX FOX FOX FOX FOX FOX FOX FOX FOX FOX FOX FOX
-    if(abs(bx - ax) <= nAn){
-      fox = 0; //not moving
+   //check to see if movement has stopped
+    if (Movement(ax, bx) && Movement(ay,by) && Movement(az, bz)){
+      counter = 0;
+      //Serial.println("Counter: ");
+      Serial.println("Counter reset");
+      SaveState(0);
       }
     else{
-      fox = 1; //still moving
-    }
-    //DUCK DUCK DUCK DUCK DUCK DUCK DUCK DUCK DUCK DUCK
-    if(abs(bx - ax) <= nAn){
-      fox = 0; //not moving
+      counter++;
+      //std::string count = "Counter: " + counter;
+      Serial.println("Counter: " + counter);
+      //Serial.println(io);
       }
-    else{
-      fox = 1; //still moving
+     delay(700);
     }
-    //RABBIT RABBIT RABBIT RABBIT RABBIT RABBIT RABBIT
-    if(abs(bx - ax) <= nAn){
-      fox = 0; //not moving
-      }
-    else{
-      fox = 1; //still moving
-    }
-    dinner = fox + rabbit + duck;
-   //DINNER DINNER DINNER DINNER DINNER DINNER DINNER DINNER DINNER DINNER
-    if (dinner > 0){
-      io =0;
-//      Serial.println("Counter: ");
-      Serial.println(io);
-      }
-    else{
-      io++;
-//      Serial.println("Counter: ");
-      Serial.println(io);
-      }
-     io = abs(io);
-     delay(500);
-    }
-
-  if(io >= 10){
-    Serial.println("The Laundry is Done!!!");
-    SaveState(1);
-    return;
-  }
-  delay(1000);
-  SaveState(0);
+  Serial.println("The Laundry is Done!!!");
+  SaveState(1);
 }
+
 
 void SaveState(int state){
   input->save(state);
 
 }
 
-Boolean Movement(int r1, int r2){
+bool Movement(int r1, int r2){
   return (abs(r2 -r1) <= nAn);
 }
