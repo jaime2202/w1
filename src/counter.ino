@@ -81,15 +81,16 @@ void loop(){
       //Serial.println("Counter: ");
       Serial.println("Counter reset");
       SaveState(counter);
+      delay(500);
       }
     else{
       counter++;
       //std::string count = "Counter: " + counter;
       Serial.println(counter);
       SaveState(counter);
-      //Serial.println(io);
+      delay(500);
       }
-     delay(700);
+
     }
     else{
       Serial.println("The Laundry is Done!!!");
