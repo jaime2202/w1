@@ -20,7 +20,7 @@ Adafruit_LIS3DH lis = Adafruit_LIS3DH();
    #define Serial SerialUSB
 #endif
 //variables for three axis
-int counter; int state;
+int state;
 int ax; int ay; int az;
 int bx; int by; int bz;
 int nAn;
@@ -58,11 +58,12 @@ void setup() {
   Serial.println("G");
 }
 
+int counter = 0;
 void loop(){
   io.run();
 
   nAn = 200;
-  while (counter <= 10){
+  if (counter <= 10){
   // grab the one state of the acc
     lis.read();
     ax = lis.x; ay = lis.y; az = lis.z;
@@ -71,7 +72,11 @@ void loop(){
     lis.read();
     bx = lis.x; by = lis.y; bz = lis.z;
    //check to see if movement has stopped
-    if (Movement(ax, bx) && Movement(ay,by) && Movement(az, bz)){
+   int up = Movement(ax, bx);
+   int down = Movement(ay,by);
+   int zdown = Movement(az, bz);
+   int tot = up + down + zdown;
+    if(tot < 3){
       counter = 0;
       //Serial.println("Counter: ");
       Serial.println("Counter reset");
@@ -80,13 +85,16 @@ void loop(){
     else{
       counter++;
       //std::string count = "Counter: " + counter;
-      Serial.println("Counter: " + counter);
+      Serial.println(counter);
       //Serial.println(io);
       }
      delay(700);
     }
-  Serial.println("The Laundry is Done!!!");
-  SaveState(1);
+    else{
+      Serial.println("The Laundry is Done!!!");
+      SaveState(1);
+      }
+
 }
 
 
@@ -95,6 +103,10 @@ void SaveState(int state){
 
 }
 
-bool Movement(int r1, int r2){
-  return (abs(r2 -r1) <= nAn);
+int Movement(int r1, int r2){
+  if(abs(r2 -r1) <= nAn){
+    return 1;
+  }
+  else
+    return 0;
 }
