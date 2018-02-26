@@ -9,7 +9,7 @@ AdafruitIO_Feed *input = io.feed("state");
 #include <Adafruit_Sensor.h>
 //for software SPI
 #define LIS3DH_CLK 13
-#define LIS3DH_MISO 12
+#define LIS3DH_MISO 12aemb;wd;f
 #define LIS3DH_MOSI 11
 //for hardware & software SPI
 #define LIS3DH_CS 10
